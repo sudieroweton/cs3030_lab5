@@ -4,3 +4,36 @@
 #Sudie Roweton
 #Lab 5: Database Loader
 #CS 3030 - Scripting Languages
+
+import sqlite3
+import csv
+import sys
+import random
+import os
+
+#Check for correct usage
+if len(sys.argv) != 3:
+	print ("Usage:./dbload INPUTCSV OUTPUTDB")
+	exit(1)
+
+inputcsv = sys.argv[1]
+outputdb = sys.argv[2]
+
+#for testing
+#print(inputcsv)
+#print(outputdb)
+
+#Open CSV file using try/except and print exception and exit(1) if error
+
+#Open the database using try/except and print exception and exit(1) if error
+
+#Drop the tables if they exist and create the two tables
+
+#For each record in the CSV file:
+# (1)skipp the header record
+# (2)attempt to retrieve the student from the students table using the wnum
+# (3)if the retrival fails, insert the student record in the students table
+# (4)insert the class record into the classes table
+
+
+#exit(0) after all records have been added
