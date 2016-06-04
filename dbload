@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-
 #Sudie Roweton
 #Lab 5: Database Loader
 #CS 3030 - Scripting Languages
@@ -19,15 +18,54 @@ if len(sys.argv) != 3:
 inputcsv = sys.argv[1]
 outputdb = sys.argv[2]
 
-#for testing
-#print(inputcsv)
-#print(outputdb)
-
 #Open CSV file using try/except and print exception and exit(1) if error
+try:
+	open(inputcsv, 'r')
+
+except:
+	print("Error")
+	exit(1)
 
 #Open the database using try/except and print exception and exit(1) if error
+try:
+	dbcr = sqlite3.connect(outputdb)
+	curs = dbcr.cursor()
 
-#Drop the tables if they exist and create the two tables
+	curs.execute('''drop table if exists classes''')
+	curs.execute('''create table classes (id text, subjcode text, coursenumber text, termcode text)''')
+	curs.execute('''drop table if exists students''')
+	curs.execute('''create table students (id text primary key unique, firstname text, lastname text, email text, major text, city text, state text, zip text)''')
+
+except:
+	print("Error")
+	exit(1)
+
+#For each record in the CSV file add to students and classes tables
+reader = csv.reader(open(inputcsv, 'r'), delimiter=',', quotechar='"')
+counter = 0
+
+for row in reader:
+
+	counter += 1
+	#skip over the header
+	if counter == 1:
+		continue
+
+	#split into subjcode and coursenumber
+	s = row[5].split(" ")
+	r1 = (row[0], row[1], row[2], row[3], row[4], row[7], row[8],row[9])
+	r2 = (row[0], s[0], s[1], row[6])
+	
+	#check if student exists in the students table already and then insert if not
+	curs.execute("select * from students where id = '{0}'".format(row[0]))
+	if not curs.fetchone():
+		curs.execute('''insert into students(id, firstname, lastname, email, major, city, state, zip) values (?,?,?,?,?,?,?,?)''',r1)	
+	curs.execute('''insert into classes (id, subjcode, coursenumber, termcode) values (?,?,?,?)''',r2)
+
+#don't forget to commit!
+dbcr.commit()
+exit(0)
+
 
 #For each record in the CSV file:
 # (1)skipp the header record
